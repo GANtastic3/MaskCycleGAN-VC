@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Dataset
+vcc2018_training/
+vcc2018_training_preprocessed/
+results/
+*.zip*
+
+.vscode

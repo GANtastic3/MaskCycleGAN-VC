@@ -1,6 +1,6 @@
 import torch.nn as nn
 import torch
-from cycleGAN_VC3.tfan_module import TFAN_1D, TFAN_2D
+from mask_cyclegan_vc.tfan_module import TFAN_1D, TFAN_2D
 
 
 class GLU(nn.Module):
@@ -27,7 +27,6 @@ class PixelShuffle(nn.Module):
         return input.view(n, c_out, w_new)
 
 
-##########################################################################################
 class ResidualLayer(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding):
         super(ResidualLayer, self).__init__()
@@ -67,7 +66,6 @@ class ResidualLayer(nn.Module):
         return input + h2_norm
 
 
-##########################################################################################
 class downSample_Generator(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding):
         super(downSample_Generator, self).__init__()
@@ -366,17 +364,17 @@ if __name__ == '__main__':
     import sys
     import numpy as np
 
-    args = sys.argv
-    print(args)
-    if len(args) > 1:
-        if args[1] == "g":
-            generator = Generator()
-            print(generator)
-        elif args[1] == "d":
-            discriminator = Discriminator()
-            print(discriminator)
+    # args = sys.argv
+    # print(args)
+    # if len(args) > 1:
+    #     if args[1] == "g":
+    #         generator = Generator()
+    #         print(generator)
+    #     elif args[1] == "d":
+    #         discriminator = Discriminator()
+    #         print(discriminator)
 
-        sys.exit(0)
+    #     sys.exit(0)
 
     # Generator Dimensionality Testing
     np.random.seed(0)
@@ -386,8 +384,9 @@ if __name__ == '__main__':
     input = np.random.randn(2, 80, 64)
     input = torch.from_numpy(input).float()
     print("Generator input: ", input.shape)
+    mask = torch.ones_like(input)
     generator = Generator(input.shape[1:], residual_in_channels)
-    output = generator(input)
+    output = generator(input, mask)
     print("Generator output shape: ", output.shape)
 
     # Discriminator Dimensionality Testing

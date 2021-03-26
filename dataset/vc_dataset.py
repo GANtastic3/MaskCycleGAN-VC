@@ -8,7 +8,7 @@ import torch
 import numpy as np
 
 
-class trainingDataset(Dataset):
+class VCDataset(Dataset):
     def __init__(self, datasetA, datasetB, n_frames=64, max_mask_len=25, valid=False):
         self.datasetA = datasetA
         self.datasetB = datasetB

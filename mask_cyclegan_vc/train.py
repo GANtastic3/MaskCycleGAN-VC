@@ -5,11 +5,10 @@ import torch
 import torch.utils.data as data
 import pickle
 
-from cycleGAN_VC3.model import Generator, Discriminator
+from mask_cyclegan_vc.model import Generator, Discriminator
 from args.cycleGAN_train_arg_parser import CycleGANTrainArgParser
-from dataset.dataset import Dataset
-from dataset.vc_dataset import trainingDataset
-from cycleGAN_VC3.utils import get_audio_transforms, data_processing, decode_melspectrogram, get_img_from_fig, get_waveform_fig, get_mel_spectrogram_fig
+from dataset.vc_dataset import VCDataset
+from mask_cyclegan_vc.utils import get_audio_transforms, data_processing, decode_melspectrogram, get_img_from_fig, get_waveform_fig, get_mel_spectrogram_fig
 from logger.train_logger import TrainLogger
 from saver.model_saver import ModelSaver
 
@@ -49,7 +48,7 @@ class CycleGANTraining(object):
         print(f'generator_lr_decay = {self.generator_lr_decay}')
         print(f'discriminator_lr_decay = {self.discriminator_lr_decay}')
         self.num_frames = args.num_frames
-        self.dataset = trainingDataset(datasetA=self.dataset_A,
+        self.dataset = VCDataset(datasetA=self.dataset_A,
                                        datasetB=self.dataset_B,
                                        n_frames=args.num_frames,
                                        max_mask_len=args.max_mask_len)
@@ -58,7 +57,7 @@ class CycleGANTraining(object):
                                                             shuffle=True,
                                                             drop_last=False)
 
-        self.validation_dataset = trainingDataset(datasetA=self.dataset_A,
+        self.validation_dataset = VCDataset(datasetA=self.dataset_A,
                                                   datasetB=self.dataset_B,
                                                   n_frames=args.num_frames_validation,
                                                   max_mask_len=args.max_mask_len,

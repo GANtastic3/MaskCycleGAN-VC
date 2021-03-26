@@ -8,8 +8,8 @@ from args.train_arg_parser import TrainArgParser
 
 class CycleGANTrainArgParser(TrainArgParser):
     """
-    Class which implements an argument parser for args used only in training CycleGAN VC.
-    It inherits BaseArgParser.
+    Class which implements an argument parser for args used only in training MaskCycleGAN-VC.
+    It inherits TrainArgParser.
     """
 
     def __init__(self):

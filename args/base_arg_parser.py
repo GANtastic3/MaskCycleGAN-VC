@@ -1,5 +1,5 @@
 """
-Base arguments for all scripts
+Base arguments for all scripts.
 """
 
 import argparse
@@ -38,34 +38,11 @@ class BaseArgParser(object):
         self.parser.add_argument(
             '--batch_size', type=int, default=20, help='Batch size.')
         self.parser.add_argument(
-            '--num_workers', default=2, type=int, help='Number of threads for the DataLoader.')
-        self.parser.add_argument(
-            '--data_dir', type=str, default='/home/data/', help='Directory for data.')
-        self.parser.add_argument(
             '--save_dir', type=str, default='/home/results/', help='Directory for results including ckpts.')
-        self.parser.add_argument(
-            '--manifest_path', type=str, default='./manifests/', help='Directory for manifest files.')
         self.parser.add_argument(
             '--seed', type=int, default=0, help='Random Seed.')
         self.parser.add_argument('--gpu_ids', type=str, default='0',
                                  help='Comma-separated list of GPU IDs.')
-        # Dataset Args
-        self.parser.add_argument('--small_dataset', default=False, action='store_true',
-                                 help=('Train with an abbreviated dataset.')) 
-        self.parser.add_argument('--coraal', default=False, action='store_true',
-                                 help=('Whether to train on the coraal dataset.'))      
-        self.parser.add_argument('--voc', default=False, action='store_true',
-                                 help=('Whether to train on the voc dataset.')) 
-        self.parser.add_argument('--converted', default=False, action='store_true',
-                                 help=('Whether to train on voc speakers which were converted using CycleGAN.'))
-        self.parser.add_argument('--unconverted', default=False, action='store_true',
-                                 help=('Whether to train on voc speakers which were not converted using CycleGAN.'))
-        self.parser.add_argument('--append', default=False, action='store_true',
-                                 help=('Whether to append converted voc audio to the training set.'))
-        self.parser.add_argument('--converted_source_ids', nargs='+',
-                                 default=['18', '10', '7', '13', '26', '24', '6'], type=str, help='source ids of converted voc speakers.')
-        self.parser.add_argument('--return_pair', default=False, action='store_true',
-                                 help=('Whether to return paired data. Used in CycleGAN training.')) 
 
         # Logger Args
         self.parser.add_argument('--steps_per_print', type=int, default=1000,
@@ -76,10 +53,6 @@ class BaseArgParser(object):
             '--start_epoch', type=int, default=1, help='Epoch to start training')
         self.parser.add_argument('--load_epoch', type=int, default=0,
                                  help='Default uses latest cached model if continue train or eval set')
-
-        # Saver Args
-        self.parser.add_argument('--ckpt_path', type=str, default=None,
-                                 help='Path to model checkpoint')
 
 
     def parse_args(self):

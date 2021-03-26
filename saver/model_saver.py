@@ -42,29 +42,10 @@ class ModelSaver(object):
         self.max_ckpts = max_ckpts
         self.ckpt_names = sorted([name for name in os.listdir(
             self.ckpt_dir) if name.split(".", 1)[1] == "pth.tar"])
-        self.metric_name = metric_name
-        self.maximize_metric = maximize_metric
-        self.best_metric_val = None
 
-        if 'best.pth.tar' in self.ckpt_names:
-            # do not store best ckpt file in ckpt_paths
-            self.ckpt_names.remove('best.pth.tar')
+    def save(self, epoch, model, optimizer, lr_scheduler, device, model_name):
+        """If this step corresponds to a save step, save model parameters to disk.
 
-    def _is_best(self, metric_val):
-        """
-        Check whether metric_val is the best one we've seen so far.
-        Args:
-            metric_val (float): Computed metric value
-        """
-        if metric_val is None:
-            return False
-        return (self.best_metric_val is None
-                or (self.maximize_metric and self.best_metric_val < metric_val)
-                or (not self.maximize_metric and self.best_metric_val > metric_val))
-
-    def save(self, epoch, model, optimizer, lr_scheduler, device, model_name, metric_val=None):
-        """
-        If this step corresponds to a save step, save model parameters to disk.
         Args:
             epoch (int): Current epoch
             model: Model to save
@@ -72,7 +53,6 @@ class ModelSaver(object):
             optimizer (torch.optim.Optimizer): Optimizer for model parameters
             device (str): Device where the model/optimizer parameters belong
             model_name (str): Name of model to save
-            metric_val (:obj:`float`, optional): Computed metric value
         """
         # Unwrap data parallel module if needed
         try:
@@ -91,10 +71,6 @@ class ModelSaver(object):
             'lr_scheduler': lr_scheduler.state_dict() if lr_scheduler is not None else None,
         }
 
-        # Save metric value in checkpoint info
-        if self.metric_name:
-            ckpt_dict['ckpt_info'][self.metric_name] = metric_val
-
         model.to(device)
 
         file_name = f'{str(epoch).zfill(3)}_{model_name}.pth.tar'
@@ -102,13 +78,6 @@ class ModelSaver(object):
         ckpt_path = os.path.join(self.ckpt_dir, file_name)
         torch.save(ckpt_dict, ckpt_path)
         print(f"Saved model to {ckpt_path}")
-
-        # Save the best model
-        if self.metric_name and self._is_best(metric_val):
-            self.best_metric_val = metric_val
-            best_path = os.path.join(self.ckpt_dir, 'best.pth.tar')
-            print("Saving model as best model.")
-            shutil.copy(ckpt_path, best_path)
 
         # Remove a checkpoint if more than max_ckpts ckpts saved
         if self.max_ckpts:
@@ -140,8 +109,6 @@ class ModelSaver(object):
             if model_name and hasattr(self.args, 'load_epoch'):
                 file_name = f'{str(self.args.load_epoch).zfill(3)}_{model_name}.pth.tar'
                 ckpt_path = os.path.join(self.ckpt_dir, file_name)
-            elif 'best.pth.tar' in ckpt_paths:
-                ckpt_path = os.path.join(self.ckpt_dir, 'best.pth.tar')
             else:
                 print("No checkpoint found. Failed to load load model checkpoint.")
                 return
@@ -152,14 +119,5 @@ class ModelSaver(object):
             optimizer.load_state_dict(checkpoint['optimizer'])
         if scheduler is not None:
             scheduler.load_state_dict(checkpoint['lr_scheduler'])
-
-        # Extract best metric if best model is available
-        if 'best.pth.tar' in ckpt_paths:
-            best_path = os.path.join(self.ckpt_dir, 'best.pth.tar')
-            best_checkpoint = torch.load(best_path)
-            self.best_metric_val = best_checkpoint['ckpt_info'][self.metric_name]
-            best_epoch = best_checkpoint['ckpt_info']['epoch']
-            print(
-                f"Best {self.metric_name} was {self.best_metric_val} from epoch {best_epoch}.")
 
         print(f"Loaded {checkpoint['model_class']} from {ckpt_path}")
