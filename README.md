@@ -28,6 +28,7 @@ Paper: https://arxiv.org/pdf/2102.12841.pdf
 
 Repository Contributors: [Claire Pajot](https://github.com/cmpajot), [Hikaru Hotta](https://github.com/HikaruHotta), [Sofian Zalouk](https://github.com/szalouk)
 
+
 ## Setup
 
 Clone the repository.
@@ -109,9 +110,14 @@ python -W ignore::UserWarning -m mask_cyclegan_vc.train \
 
 To continue training from a previous checkpoint in the case that training is suspended, add the argument `--continue train` while keeping all others the same. The model saver class will automatically load the most recently saved checkpoint and resume training.
 
+Launch Tensorboard in a separate terminal window.
+```
+tensorboard --logdir results/logs
+```
+
 ## Testing
 
-Test your trained MaskCycleGAN-VC by converting between `<speaker_A_id>` and `<speaker_B_id>` on the evaluation dataset. Your converted .wav files are stored in `<save_dir>/<name>/converted_audio`.
+Test your trained MaskCycleGAN-VC by converting between `<speaker_A_id>` and `<speaker_B_id>` on the evaluation dataset. Your converted .wav files are stored in `results/<name>/converted_audio`.
 
 ```
 python -W ignore::UserWarning -m mask_cyclegan_vc.test \
@@ -129,6 +135,44 @@ python -W ignore::UserWarning -m mask_cyclegan_vc.test \
 Toggle between A->B and B->A conversion by setting `--model_name` as either `generator_A2B` or `generator_B2A`.
 
 Select the epoch to load your model from by setting `--load_epoch`.
+
+## Code Organization
+```
+├── README.md                       <- Top-level README.
+├── environment.yml                 <- Conda environment
+├── .gitignore
+├── LICENSE
+|
+├── args
+│   ├── base_arg_parser             <- arg parser
+│   ├── train_arg_parser            <- arg parser for training (inherits base_arg_parser)
+│   ├── cycleGAN_train_arg_parser   <- arg parser for training MaskCycleGAN-VC (inherits train_arg_parser)
+│   ├── cycleGAN_test_arg_parser    <- arg parser for testing MaskCycleGAN-VC (inherits base_arg_parser)
+│
+├── bash_scripts
+│   ├── mask_cyclegan_train.sh      <- sample script to train MaskCycleGAN-VC
+│   ├── mask_cyclegan_test.sh       <- sample script to test MaskCycleGAN-VC
+│
+├── data_preprocessing
+│   ├── preprocess_vcc2018.py       <- preprocess VCC2018 dataset
+│
+├── dataset
+│   ├── vc_dataset.py               <- torch dataset class for MaskCycleGAN-VC
+│
+├── logger
+│   ├── base_logger.sh              <- logging to Tensorboard
+│   ├── train_logger.sh             <- logging to Tensorboard during training (inherits base_logger)
+│
+├── saver
+│   ├── model_saver.py              <- saves and loads models
+│
+├── mask_cyclegan_vc
+│   ├── model.py                    <- defines MaskCycleGAN-VC model architecture
+│   ├── train.py                    <- training script for MaskCycleGAN-VC
+│   ├── test.py                     <- training script for MaskCycleGAN-VC
+│   ├── utils.py                    <- utility functions to train and test MaskCycleGAN-VC
+
+```
 
 ## Acknowledgements
 
