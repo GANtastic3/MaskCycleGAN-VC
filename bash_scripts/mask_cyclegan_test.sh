@@ -7,6 +7,6 @@ python -m mask_cyclegan_vc.test \
     --gpu_ids 0 \
     --speaker_A_id VCC2SF3 \
     --speaker_B_id VCC2TF1 \
-    --ckpt_dir /data1/cycleGAN_VC3/mask_cyclegan_vc_VCC2SF3_VCC2TF1/ckpts \
+    --ckpt_dir results/mask_cyclegan_vc_VCC2SF3_VCC2TF1/ckpts \
     --load_epoch 500 \
     --model_name generator_A2B \

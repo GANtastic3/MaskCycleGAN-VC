@@ -4,7 +4,7 @@
 python -W ignore::UserWarning -m mask_cyclegan_vc.train \
     --name mask_cyclegan_vc_VCC2SF3_VCC2TF1 \
     --seed 0 \
-    --save_dir /data1/cycleGAN_VC3 \
+    --save_dir results/cycleGAN_VC3 \
     --preprocessed_data_dir vcc2018_preprocessed/vcc2018_training \
     --speaker_A_id VCC2SF3 \
     --speaker_B_id VCC2TF1 \
