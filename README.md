@@ -1,5 +1,11 @@
 # MaskCycleGAN-VC
-Implementation of Kaneko et al.'s MaskCycleGAN-VC model for non-parallel voice conversion.
+Unofficial PyTorch Implementation of Kaneko et al.'s MaskCycleGAN-VC model for non-parallel voice conversion.
+
+MaskCycleGAN-VC is the state of the art method for non-parallel voice conversion using CycleGAN. It is trained using a novel auxiliary task of filling in frames (FIF) by applying a temporal mask to the input Mel-spectrogram
+
+Paper: https://arxiv.org/pdf/2102.12841.pdf
+
+Repository Contributors: [Claire Pajot](https://github.com/cmpajot), [Hikaru Hotta](https://github.com/HikaruHotta), [Sofian Zalouk](https://github.com/szalouk)
 
 ## VCC2018 Dataset
 
