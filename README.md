@@ -7,6 +7,21 @@ Paper: https://arxiv.org/pdf/2102.12841.pdf
 
 Repository Contributors: [Claire Pajot](https://github.com/cmpajot), [Hikaru Hotta](https://github.com/HikaruHotta), [Sofian Zalouk](https://github.com/szalouk)
 
+## Setup
+
+Clone the repository.
+
+```
+git clone git@github.com:GANtastic3/MaskCycleGAN-VC.git
+cd MaskCycleGAN-VC
+```
+
+Create the conda environment.
+```
+conda env create -f environment.yml
+conda activate MaskCycleGAN-VC
+```
+
 ## VCC2018 Dataset
 
 The authors of the paper used the dataset from the Spoke task of [Voice Conversion Challenge 2018 (VCC2018)](https://datashare.ed.ac.uk/handle/10283/3061). This is a dataset of non-parallel utterances from 6 male and 6 female speakers. Each speaker utters approaximately 80 sentences.
