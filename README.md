@@ -40,7 +40,7 @@ apt-get install unzip
 unzip vcc2018_database_training.zip?sequence=2 -d vcc2018/
 unzip vcc2018_database_evaluation.zip?sequence=3 -d vcc2018/
 unzip vcc2018_database_reference.zip?sequence=5 -d vcc2018/
-mv -v vcc_2018/vcc2018_reference/* vcc2018/vcc2018_evaluation
+mv -v vcc2018/vcc2018_reference/* vcc2018/vcc2018_evaluation
 rm -rf vcc2018/vcc2018_reference
 ```
 
