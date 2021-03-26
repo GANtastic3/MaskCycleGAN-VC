@@ -17,17 +17,11 @@ class CycleGANTrainArgParser(TrainArgParser):
 
         self.parser.add_argument('--sample_rate', type=int, default=22050, help='Sampling rate of mel-spectrograms.')
         self.parser.add_argument(
-            '--normalized_dataset_A_path', type=str, default=None, help='Path to pickle file containing normalized dataset A.')
+            '--speaker_A_id', type=str, default="28", help='Source speaker id (From VOC dataset).')
         self.parser.add_argument(
-            '--normalized_dataset_B_path', type=str, default=None, help='Path to pickle file containing normalized dataset A.')
+            '--speaker_B_id', type=str, default="DCB_se2_ag3_m_02_1", help='Target speaker id (From CORAAL dataset).')
         self.parser.add_argument(
-            '--norm_stats_A_path', type=str, default=None, help='Path to npz file containing dataset A normalization stats')
-        self.parser.add_argument(
-            '--norm_stats_B_path', type=str, default=None, help='Path to npz file containing dataset B normalization stats')
-        self.parser.add_argument(
-            '--source_id', type=str, default="28", help='Source speaker id (From VOC dataset).')
-        self.parser.add_argument(
-            '--target_id', type=str, default="DCB_se2_ag3_m_02_1", help='Target speaker id (From CORAAL dataset).')
+            '--preprocessed_data_dir', type=str, default="vcc2018_training_preprocessed/", help='Directory containing preprocessed dataset files.')
 
         # Model args
         self.parser.add_argument(

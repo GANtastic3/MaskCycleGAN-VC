@@ -70,15 +70,15 @@ def preprocess_dataset(data_path, speaker_id, cache_folder='./cache/'):
 
     mel_normalized, mel_mean, mel_std = normalize_mel(data_path)
 
-    if not os.path.exists(cache_folder):
-        os.makedirs(cache_folder)
+    if not os.path.exists(os.path.join(cache_folder, speaker_id)):
+        os.makedirs(os.path.join(cache_folder, speaker_id))
 
-    np.savez(os.path.join(cache_folder, f"{speaker_id}_norm_stat.npz"),
+    np.savez(os.path.join(cache_folder, speaker_id, f"{speaker_id}_norm_stat.npz"),
              mean=mel_mean,
              std=mel_std)
 
     save_pickle(variable=mel_normalized,
-                fileName=os.path.join(cache_folder, f"{speaker_id}_normalized.pickle"))
+                fileName=os.path.join(cache_folder, speaker_id, f"{speaker_id}_normalized.pickle"))
 
     print(f"Preprocessed and saved data for speaker: {speaker_id}.")
 

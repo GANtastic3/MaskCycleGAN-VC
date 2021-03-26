@@ -1,7 +1,7 @@
-#! python
-# -*- coding: utf-8 -*-
-# Author: kun
-# @Time: 2019-07-23 14:36
+"""
+Dataset class for voice conversion. Returns pairs of Mel-spectrograms from
+two datasets as well as corresponding masks.
+"""
 
 from torch.utils.data.dataset import Dataset
 import torch
@@ -45,7 +45,7 @@ class VCDataset(Dataset):
             assert frames_A_total >= n_frames
             start_A = np.random.randint(frames_A_total - n_frames + 1)
             end_A = start_A + n_frames
-            mask_size_A = np.random.randint(0,self.max_mask_len)
+            mask_size_A = np.random.randint(0, self.max_mask_len)
             assert n_frames > mask_size_A
             mask_start_A = np.random.randint(0, n_frames - mask_size_A)
             mask_A = np.ones_like(data_A[:, start_A:end_A])
@@ -58,7 +58,7 @@ class VCDataset(Dataset):
             assert frames_B_total >= n_frames
             start_B = np.random.randint(frames_B_total - n_frames + 1)
             end_B = start_B + n_frames
-            mask_size_B = np.random.randint(0,self.max_mask_len)
+            mask_size_B = np.random.randint(0, self.max_mask_len)
             assert n_frames > mask_size_B
             mask_start_B = np.random.randint(0, n_frames - mask_size_B)
             mask_B = np.ones_like(data_A[:, start_A:end_A])
@@ -76,13 +76,16 @@ class VCDataset(Dataset):
     def __len__(self):
         return min(len(self.datasetA), len(self.datasetB))
 
-# if __name__ == '__main__':
-#     trainA = np.random.randn(162, 24, 554)
-#     trainB = np.random.randn(158, 24, 554)
-#     dataset = trainingDataset(trainA, trainB)
-#     trainLoader = torch.utils.data.DataLoader(dataset=dataset,
-#                                               batch_size=2,
-#                                               shuffle=True)
-#     for epoch in range(10):
-#         for i, (trainA, trainB) in enumerate(trainLoader):
-#             print(trainA.shape, trainB.shape)
+
+if __name__ == '__main__':
+    # Trivial test for dataset class
+    trainA = np.random.randn(162, 24, 554)
+    trainB = np.random.randn(158, 24, 554)
+    dataset = VCDataset(trainA, trainB)
+    trainLoader = torch.utils.data.DataLoader(dataset=dataset,
+                                              batch_size=2,
+                                              shuffle=True)
+    for i, (A, mask_A, B, mask_B) in enumerate(trainLoader):
+        print(A.shape, mask_B.shape, B.shape, mask_B.shape)
+        assert A.shape == mask_B.shape == B.shape == mask_B.shape
+        break
