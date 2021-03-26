@@ -31,7 +31,7 @@ class BaseArgParser(object):
 
     def __init__(self):
         self.parser = argparse.ArgumentParser(description=' ')
-        self.isTrain = True
+        self.isTrain = False
 
         self.parser.add_argument(
             '--name', type=str, default='debug', help='Experiment name prefix.')
@@ -86,8 +86,9 @@ class BaseArgParser(object):
             fh.write('\n')
 
         # Create ckpt dir and viz dir
-        args.ckpt_dir = os.path.join(args.save_dir, args.name, 'ckpts')
-        os.makedirs(args.ckpt_dir, exist_ok=True)
+        if args.isTrain:
+            args.ckpt_dir = os.path.join(args.save_dir, args.name, 'ckpts')
+            os.makedirs(args.ckpt_dir, exist_ok=True)
 
         # Set up available GPUs
         def args_to_list(csv, arg_type=int):
@@ -108,7 +109,7 @@ class BaseArgParser(object):
             args.device = 'cpu'
 
         # Ensure consistency of load_epoch and start_epoch arguments with each other and defaults.
-        if not args.isTrain or args.continue_train:
+        if not args.isTrain or (hasattr(args, 'continue_train') and args.continue_train):
             if args.load_epoch > 0:
                 args.start_epoch = args.load_epoch + 1
             elif args.start_epoch > 1:

@@ -1,6 +1,6 @@
 """
-Arguments for CycleGAN VC.
-Inherits BaseArgParser.
+Arguments for MaskCycleGAN-VC training.
+Inherits TrainArgParser.
 """
 
 from args.train_arg_parser import TrainArgParser

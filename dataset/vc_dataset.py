@@ -9,7 +9,7 @@ import numpy as np
 
 
 class VCDataset(Dataset):
-    def __init__(self, datasetA, datasetB, n_frames=64, max_mask_len=25, valid=False):
+    def __init__(self, datasetA, datasetB=None, n_frames=64, max_mask_len=25, valid=False):
         self.datasetA = datasetA
         self.datasetB = datasetB
         self.n_frames = n_frames
@@ -20,12 +20,15 @@ class VCDataset(Dataset):
         dataset_A = self.datasetA
         dataset_B = self.datasetB
         n_frames = self.n_frames
+        
+        if self.valid:
+            if dataset_B is None:  # only return datasetA utterance
+                return dataset_A[index]
+            else:
+                return dataset_A[index], dataset_B[index]
 
         self.length = min(len(dataset_A), len(dataset_B))
         num_samples = min(len(dataset_A), len(dataset_B))
-
-        if self.valid:
-            return dataset_A[index], dataset_B[index]
 
         train_data_A_idx = np.arange(len(dataset_A))
         train_data_B_idx = np.arange(len(dataset_B))
@@ -74,7 +77,10 @@ class VCDataset(Dataset):
         return train_data_A[index], train_mask_A[index],  train_data_B[index], train_mask_B[index]
 
     def __len__(self):
-        return min(len(self.datasetA), len(self.datasetB))
+        if self.datasetB is None:
+            return len(self.datasetA)
+        else:
+            return min(len(self.datasetA), len(self.datasetB))
 
 
 if __name__ == '__main__':

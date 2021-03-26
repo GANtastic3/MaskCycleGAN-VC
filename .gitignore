@@ -129,8 +129,8 @@ dmypy.json
 .pyre/
 
 # Dataset
-vcc2018_training/
-vcc2018_training_preprocessed/
+vcc2018/
+vcc2018_preprocessed/
 results/
 *.zip*
 
