@@ -53,19 +53,19 @@ Train MaskCycleGAN-VC to convert between <speaker_id_A> and <speaker_id_B>. You 
 python -W ignore::UserWarning -m mask_cyclegan_vc.train \
     --name mask_cyclegan_vc_<speaker_id_A>_<speaker_id_B> \
     --seed 0 \  # random seed
-    --save_dir results/ \  # save directory for all logs and model checkpoints
-    --preprocessed_data_dir vcc2018_training_preprocessed/ \  # directory with preprocessed data
+    --save_dir results/ \
+    --preprocessed_data_dir vcc2018_preprocessed/vcc2018_training/ \
     --speaker_A_id <speaker_id_A> \
     --speaker_B_id <speaker_id_B> \
     --epochs_per_save 100 \
-    --epochs_per_plot 10 \  # pushes decoded wavforms to tensorboard
+    --epochs_per_plot 10 \
     --num_epochs 6172 \
     --batch_size 1 \
     --lr 5e-4 \
     --decay_after 1e4 \
-    --sample_rate 22050 \  # sampling rate of MelGAN vocoder (do not change)
-    --num_frames 64 \  # length of Mel-spectrograms
-    --max_mask_len 25 \  # mask of length 0-25 is applied to the Mel-spectrogram
+    --sample_rate 22050 \
+    --num_frames 64 \
+    --max_mask_len 25 \
     --gpu_ids 0 \
 ```
 
