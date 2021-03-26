@@ -1,7 +1,28 @@
 # MaskCycleGAN-VC
-Unofficial PyTorch Implementation of Kaneko et al.'s MaskCycleGAN-VC model for non-parallel voice conversion.
+Unofficial **PyTorch** implementation of Kaneko et al.'s [**MaskCycleGAN-VC**](http://www.kecl.ntt.co.jp/people/kaneko.takuhiro/projects/maskcyclegan-vc/index.html) for non-parallel voice conversion.
 
 MaskCycleGAN-VC is the state of the art method for non-parallel voice conversion using CycleGAN. It is trained using a novel auxiliary task of filling in frames (FIF) by applying a temporal mask to the input Mel-spectrogram
+
+<p align="center">
+<img src="imgs/MaskedCycleGAN-VC.png" width="500">
+<br>
+<b>Figure1: MaskCycleGAN-VC Training</b>
+<br><br><br><br>
+</p>
+
+<p align="center">
+<img src="imgs/generator.png" width="800">
+<br>
+<b>Figure2: MaskCycleGAN-VC Generator Architecture</b>
+<br><br><br><br>
+</p>
+
+<p align="center">
+<img src="imgs/discriminator.png" width="500">
+<br>
+<b>Figure3: MaskCycleGAN-VC PatchGAN Discriminator Architecture</b>
+<br><br><br><br>
+</p>
 
 Paper: https://arxiv.org/pdf/2102.12841.pdf
 
@@ -40,13 +61,13 @@ apt-get install unzip
 unzip vcc2018_database_training.zip?sequence=2 -d vcc2018/
 unzip vcc2018_database_evaluation.zip?sequence=3 -d vcc2018/
 unzip vcc2018_database_reference.zip?sequence=5 -d vcc2018/
-mv -v vcc_2018/vcc2018_reference/* vcc2018/vcc2018_evaluation
+mv -v vcc2018/vcc2018_reference/* vcc2018/vcc2018_evaluation
 rm -rf vcc2018/vcc2018_reference
 ```
 
 ## Data Preprocessing
 
-To expedite training, preprocess the dataset by converting waveforms to melspectograms, then save the spectrograms as pickle files `<speaker_id>normalized.pickle` and normalization statistics (mean, std) as npz files `<speaker_id>_norm_stats.npz`. Convert waveforms to spectrograms using the [melgan vocoder](https://github.com/descriptinc/melgan-neurips) to ensure that you can decode voice converted spectrograms to waveform and listen to your samples during inference.
+To expedite training, we preprocess the dataset by converting waveforms to melspectograms, then save the spectrograms as pickle files `<speaker_id>normalized.pickle` and normalization statistics (mean, std) as npz files `<speaker_id>_norm_stats.npz`. We convert waveforms to spectrograms using a [melgan vocoder](https://github.com/descriptinc/melgan-neurips) to ensure that you can decode voice converted spectrograms to waveform and listen to your samples during inference.
 
 ```
 python data_preprocessing/preprocess_vcc2018.py \
@@ -109,7 +130,6 @@ Toggle between A->B and B->A conversion by setting `--model_name` as either `gen
 
 Select the epoch to load your model from by setting `--load_epoch`.
 
+## Acknowledgements
 
-
-
-
+This repository was inspired by [jackaduma](https://github.com/jackaduma)'s implementation of [CycleGAN-VC2](https://github.com/jackaduma/CycleGAN-VC2).
