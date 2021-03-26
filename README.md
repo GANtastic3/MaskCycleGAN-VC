@@ -16,9 +16,11 @@ Unzip the dataset file.
 ```
 mkdir vcc2018
 apt-get install unzip
-unzip vcc2018_database_training.zip?sequence=2 -d vcc_2018/
-unzip vcc2018_database_evaluation.zip?sequence=3 -d vcc_2018/
-unzip vcc2018_database_reference.zip?sequence=5 -d vcc_2018/
+unzip vcc2018_database_training.zip?sequence=2 -d vcc2018/
+unzip vcc2018_database_evaluation.zip?sequence=3 -d vcc2018/
+unzip vcc2018_database_reference.zip?sequence=5 -d vcc2018/
+mv -v vcc_2018/vcc2018_reference/* vcc2018/vcc2018_evaluation
+rm -rf vcc2018/vcc2018_reference
 ```
 
 ## Data Preprocessing
@@ -36,27 +38,21 @@ python data_preprocessing/preprocess_vcc2018.py \
 python data_preprocessing/preprocess_vcc2018.py \
   --data_directory vcc2018/vcc2018_evaluation \
   --preprocessed_data_directory vcc2018_preprocessed/vcc2018_evaluation \
-  --speaker_ids VCC2SF1 VCC2SF2 VCC2SF3 VCC2SF4 VCC2SM1 VCC2SM2 VCC2SM3 VCC2SM4
+  --speaker_ids VCC2SF1 VCC2SF2 VCC2SF3 VCC2SF4 VCC2SM1 VCC2SM2 VCC2SM3 VCC2SM4 VCC2TF1 VCC2TF2 VCC2TM1 VCC2TM2
 ```
 
-```
-python data_preprocessing/preprocess_vcc2018.py \
-  --data_directory vcc2018/vcc2018_reference \
-  --preprocessed_data_directory vcc2018_preprocessed/vcc2018_reference \
-  --speaker_ids VCC2TF1 VCC2TF2 VCC2TM1 VCC2TM2
-```
 
 ## Training
 
-Train MaskCycleGAN-VC to convert between <speaker_id_A> and <speaker_id_B>. You should start to get excellent results after only several hundred epochs.
+Train MaskCycleGAN-VC to convert between `<speaker_A_id>` and `<speaker_B_id>`. You should start to get excellent results after only several hundred epochs.
 ```
 python -W ignore::UserWarning -m mask_cyclegan_vc.train \
     --name mask_cyclegan_vc_<speaker_id_A>_<speaker_id_B> \
-    --seed 0 \  # random seed
+    --seed 0 \
     --save_dir results/ \
     --preprocessed_data_dir vcc2018_preprocessed/vcc2018_training/ \
-    --speaker_A_id <speaker_id_A> \
-    --speaker_B_id <speaker_id_B> \
+    --speaker_A_id <speaker_A_id> \
+    --speaker_B_id <speaker_B_id> \
     --epochs_per_save 100 \
     --epochs_per_plot 10 \
     --num_epochs 6172 \
@@ -70,6 +66,28 @@ python -W ignore::UserWarning -m mask_cyclegan_vc.train \
 ```
 
 To continue training from a previous checkpoint in the case that training is suspended, add the argument `--continue train` while keeping all others the same. The model saver class will automatically load the most recently saved checkpoint and resume training.
+
+## Testing
+
+Test your trained MaskCycleGAN-VC by converting between `<speaker_A_id>` and `<speaker_B_id>` on the evaluation dataset. Your converted .wav files are stored in `<save_dir>/<name>/converted_audio`.
+
+```
+python -W ignore::UserWarning -m mask_cyclegan_vc.test \
+    --name mask_cyclegan_vc_VCC2SF3_VCC2TF1 \
+    --save_dir results/ \
+    --preprocessed_data_dir vcc2018_preprocessed/vcc2018_evaluation \
+    --gpu_ids 0 \
+    --speaker_A_id VCC2SF3 \
+    --speaker_B_id VCC2TF1 \
+    --ckpt_dir /data1/cycleGAN_VC3/mask_cyclegan_vc_VCC2SF3_VCC2TF1/ckpts \
+    --load_epoch 500 \
+    --model_name generator_A2B \
+```
+
+Toggle between A->B and B->A conversion by setting `--model_name` as either `generator_A2B` or `generator_B2A`.
+
+Select the epoch to load your model from by setting `--load_epoch`.
+
 
 
 
