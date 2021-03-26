@@ -1,9 +1,12 @@
 """
 Defines the util functions associated with the cycleGAN VC pipeline.
 """
+
 import io
 import cv2
 import numpy as np
+from tqdm import tqdm
+from PIL import Image
 
 import torch
 import torch.nn as nn
@@ -13,18 +16,24 @@ from torchvision.transforms import ToTensor
 import librosa
 import librosa.display
 
-from tqdm import tqdm
-
-
 import matplotlib
 import matplotlib.pyplot as plt
-
-from PIL import Image
-
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
+
 def decode_melspectrogram(vocoder, melspectrogram, mel_mean, mel_std):
+    """Decoded a Mel-spectrogram to waveform using a vocoder.
+
+    Args:
+        vocoder (torch.nn.module): Vocoder used to decode Mel-spectrogram
+        melspectrogram (torch.Tensor): Mel-spectrogram to be converted
+        mel_mean ([type]): Mean of the Mel-spectrogram for denormalization
+        mel_std ([type]): Standard Deviations of the Mel-spectrogram for denormalization
+
+    Returns:
+        torch.Tensor: decoded Mel-spectrogram
+    """
     denorm_converted = melspectrogram * mel_std + mel_mean
     rev = vocoder.inverse(denorm_converted.unsqueeze(0))
     return rev

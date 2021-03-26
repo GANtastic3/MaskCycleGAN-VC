@@ -8,13 +8,12 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from mask_cyclegan_vc.tfan_module import TFAN_1D, TFAN_2D
-
 
 class GLU(nn.Module):
     """Custom implementation of GLU since the paper assumes GLU won't reduce
     the dimension of tensor by 2.
     """
+
     def __init__(self):
         super(GLU, self).__init__()
 
@@ -26,6 +25,7 @@ class PixelShuffle(nn.Module):
     """Custom implementation pf Pixel Shuffle since PyTorch's PixelShuffle
     requires a 4D input (we have 3D inputs).
     """
+
     def __init__(self, upscale_factor):
         super(PixelShuffle, self).__init__()
         self.upscale_factor = upscale_factor
@@ -40,6 +40,7 @@ class PixelShuffle(nn.Module):
 class ResidualLayer(nn.Module):
     """ResBlock.
     """
+
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding):
         super(ResidualLayer, self).__init__()
 
@@ -78,6 +79,7 @@ class ResidualLayer(nn.Module):
 class DownSampleGenerator(nn.Module):
     """Downsampling blocks of the Generator.
     """
+
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding):
         super(DownSampleGenerator, self).__init__()
 
@@ -97,17 +99,19 @@ class DownSampleGenerator(nn.Module):
                                                                affine=True))
 
     def forward(self, x):
-        return self.convLayer(x) * torch.sigmoid(self.convLayer_gates(x))  # GLU
+        # GLU
+        return self.convLayer(x) * torch.sigmoid(self.convLayer_gates(x))
 
 
 class Generator(nn.Module):
     """Generator of MaskCycleGAN-VC
     """
+
     def __init__(self, input_shape=(80, 64), residual_in_channels=256):
         super(Generator, self).__init__()
         Cx, Tx = input_shape
         self.flattened_channels = (Cx // 4) * residual_in_channels
-        
+
         # 2D Conv Layer
         self.conv1 = nn.Conv2d(in_channels=2,
                                out_channels=residual_in_channels // 2,
@@ -123,16 +127,16 @@ class Generator(nn.Module):
 
         # 2D Downsampling Layers
         self.downSample1 = DownSampleGenerator(in_channels=residual_in_channels // 2,
-                                                out_channels=residual_in_channels,
-                                                kernel_size=5,
-                                                stride=2,
-                                                padding=2)
+                                               out_channels=residual_in_channels,
+                                               kernel_size=5,
+                                               stride=2,
+                                               padding=2)
 
         self.downSample2 = DownSampleGenerator(in_channels=residual_in_channels,
-                                                out_channels=residual_in_channels,
-                                                kernel_size=5,
-                                                stride=2,
-                                                padding=2)
+                                               out_channels=residual_in_channels,
+                                               kernel_size=5,
+                                               stride=2,
+                                               padding=2)
 
         # 2D -> 1D Conv
         self.conv2dto1dLayer = nn.Conv1d(in_channels=self.flattened_channels,
@@ -140,7 +144,8 @@ class Generator(nn.Module):
                                          kernel_size=1,
                                          stride=1,
                                          padding=0)
-        self.conv2dto1dLayer_tfan =  nn.InstanceNorm1d(num_features=residual_in_channels,affine=True)
+        self.conv2dto1dLayer_tfan = nn.InstanceNorm1d(
+            num_features=residual_in_channels, affine=True)
 
         # Residual Blocks
         self.residualLayer1 = ResidualLayer(in_channels=residual_in_channels,
@@ -180,7 +185,8 @@ class Generator(nn.Module):
                                          kernel_size=1,
                                          stride=1,
                                          padding=0)
-        self.conv1dto2dLayer_tfan = nn.InstanceNorm1d(num_features=self.flattened_channels, affine=True)
+        self.conv1dto2dLayer_tfan = nn.InstanceNorm1d(
+            num_features=self.flattened_channels, affine=True)
 
         # UpSampling Layers
         self.upSample1 = self.upsample(in_channels=residual_in_channels,
@@ -224,15 +230,15 @@ class Generator(nn.Module):
                                                  stride=stride,
                                                  padding=padding),
                                        nn.PixelShuffle(upscale_factor=2),
-                                       nn.InstanceNorm2d(	
-                                           num_features=out_channels // 4,	
-                                           affine=True),	
+                                       nn.InstanceNorm2d(
+                                           num_features=out_channels // 4,
+                                           affine=True),
                                        GLU())
         return self.convLayer
 
     def forward(self, x, mask):
         # Conv2d
-        x = torch.stack((x*mask, mask),dim=1)
+        x = torch.stack((x*mask, mask), dim=1)
         conv1 = self.conv1(x) * torch.sigmoid(self.conv1_gates(x))  # GLU
 
         # Downsampling
@@ -240,9 +246,10 @@ class Generator(nn.Module):
         downsample2 = self.downSample2(downsample1)
 
         # Reshape
-        reshape2dto1d = downsample2.view(downsample2.size(0), self.flattened_channels , 1, -1)
+        reshape2dto1d = downsample2.view(
+            downsample2.size(0), self.flattened_channels, 1, -1)
         reshape2dto1d = reshape2dto1d.squeeze(2)
-        
+
         # 2D -> 1D
         conv2dto1d_layer = self.conv2dto1dLayer(reshape2dto1d)
         conv2dto1d_layer = self.conv2dto1dLayer_tfan(conv2dto1d_layer)
@@ -276,6 +283,7 @@ class Generator(nn.Module):
 class Discriminator(nn.Module):
     """PatchGAN discriminator.
     """
+
     def __init__(self, input_shape=(80, 64), residual_in_channels=256):
         super(Discriminator, self).__init__()
 
@@ -342,6 +350,8 @@ class Discriminator(nn.Module):
 
 
 if __name__ == '__main__':
+    # Non exhaustive test for MaskCycleGAN-VC models
+
     # Generator Dimensionality Testing
     np.random.seed(0)
 
