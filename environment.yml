@@ -1,4 +1,4 @@
-name: asr2
+name: MaskCycleGAN-VC
 channels:
   - pytorch
   - numba

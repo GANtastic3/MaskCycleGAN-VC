@@ -1,3 +1,6 @@
+# Sample training script to convert between VCC2SF3 and VCC2TF1
+# Continues training from epoch 500
+
 python -W ignore::UserWarning -m mask_cyclegan_vc.train \
     --name mask_cyclegan_vc_VCC2SF3_VCC2TF1 \
     --seed 0 \

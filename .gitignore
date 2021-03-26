@@ -133,5 +133,6 @@ vcc2018/
 vcc2018_preprocessed/
 results/
 *.zip*
+*wget-log*
 
 .vscode
