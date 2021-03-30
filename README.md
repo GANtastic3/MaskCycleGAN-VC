@@ -108,7 +108,7 @@ python -W ignore::UserWarning -m mask_cyclegan_vc.train \
     --gpu_ids 0 \
 ```
 
-To continue training from a previous checkpoint in the case that training is suspended, add the argument `--continue train` while keeping all others the same. The model saver class will automatically load the most recently saved checkpoint and resume training.
+To continue training from a previous checkpoint in the case that training is suspended, add the argument `--continue_train` while keeping all others the same. The model saver class will automatically load the most recently saved checkpoint and resume training.
 
 Launch Tensorboard in a separate terminal window.
 ```
