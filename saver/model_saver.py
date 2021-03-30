@@ -107,7 +107,7 @@ class ModelSaver(object):
 
         if ckpt_path is None:
             if model_name and hasattr(self.args, 'load_epoch'):
-                file_name = f'{str(self.args.load_epoch).zfill(3)}_{model_name}.pth.tar'
+                file_name = f'{str(self.args.load_epoch).zfill(5)}_{model_name}.pth.tar'
                 ckpt_path = os.path.join(self.ckpt_dir, file_name)
             else:
                 print("No checkpoint found. Failed to load load model checkpoint.")
