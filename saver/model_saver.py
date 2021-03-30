@@ -73,7 +73,7 @@ class ModelSaver(object):
 
         model.to(device)
 
-        file_name = f'{str(epoch).zfill(3)}_{model_name}.pth.tar'
+        file_name = f'{str(epoch).zfill(5)}_{model_name}.pth.tar'
 
         ckpt_path = os.path.join(self.ckpt_dir, file_name)
         torch.save(ckpt_dict, ckpt_path)

@@ -138,11 +138,8 @@ class BaseArgParser(object):
         ckpt_files = sorted([name for name in os.listdir(
             args.ckpt_dir) if name.split(".", 1)[1] == "pth.tar"])
 
-        if 'best.pth.tar' in ckpt_files:
-            ckpt_files.remove('best.pth.tar')
-
         if len(ckpt_files) > 0:
-            epoch = int(ckpt_files[-1][:3])
+            epoch = int(ckpt_files[-1][:5])
         else:
             epoch = 0
         return epoch
