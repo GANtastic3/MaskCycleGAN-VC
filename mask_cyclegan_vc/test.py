@@ -87,12 +87,19 @@ class MaskCycleGANVCTesting(object):
             fake_B = self.generator_A2B(real_A, torch.ones_like(real_A))
             wav_fake_B = decode_melspectrogram(self.vocoder, fake_B[0].detach(
             ).cpu(), self.dataset_A_mean, self.dataset_A_std).cpu()
+            wav_real_A = decode_melspectrogram(self.vocoder, real_A[0].detach(
+            ).cpu(), self.dataset_A_mean, self.dataset_A_std).cpu()
             save_path = None
             if self.model_name == 'generator_A2B':
-                save_path = os.path.join(self.converted_audio_dir, f"converted_{self.speaker_A_id}_to_{self.speaker_B_id}{i}.wav")
+                save_path = os.path.join(self.converted_audio_dir, f"{i}-converted_{self.speaker_A_id}_to_{self.speaker_B_id}.wav")
+                save_path_orig = os.path.join(self.converted_audio_dir,
+                                         f"{i}-original_{self.speaker_A_id}_to_{self.speaker_B_id}.wav")
             else:
-                save_path = os.path.join(self.converted_audio_dir, f"converted_{self.speaker_B_id}_to_{self.speaker_A_id}{i}.wav")
+                save_path = os.path.join(self.converted_audio_dir, f"{i}-converted_{self.speaker_B_id}_to_{self.speaker_A_id}.wav")
+                save_path_orig = os.path.join(self.converted_audio_dir,
+                                         f"{i}-original_{self.speaker_B_id}_to_{self.speaker_A_id}.wav")
             torchaudio.save(save_path, wav_fake_B, sample_rate=self.sample_rate)
+            torchaudio.save(save_path_orig, wav_real_A, sample_rate=self.sample_rate)
 
 
 if __name__ == "__main__":
