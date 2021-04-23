@@ -64,6 +64,7 @@ class MaskCycleGANVCTesting(object):
 
         # Generator
         self.generator_A2B = Generator().to(self.device)
+        self.generator_A2B.eval()
 
         # Load Generator from ckpt
         self.saver = ModelSaver(args)
