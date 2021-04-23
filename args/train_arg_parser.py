@@ -16,7 +16,7 @@ class TrainArgParser(BaseArgParser):
         super(TrainArgParser, self).__init__()
         self.isTrain = True
 
-        self.parser.add_argument('--num_epochs', type=int, default=20, help='Number of epochs to train.')
+        self.parser.add_argument('--num_epochs', type=int, default=6500, help='Number of epochs to train.')
         self.parser.add_argument(
             '--decay_after', type=float, default=2e5, help='Learning rate.')
         self.parser.add_argument(

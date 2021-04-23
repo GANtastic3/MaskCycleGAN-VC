@@ -327,11 +327,11 @@ class Discriminator(nn.Module):
                                                        padding=[0, 1]))
 
     def downsample(self, in_channels, out_channels, kernel_size, stride, padding):
-        convLayer = nn.Sequential(nn.Conv2d(in_channels=in_channels,
+        convLayer = nn.Sequential(nn.utils.spectral_norm(nn.Conv2d(in_channels=in_channels,
                                             out_channels=out_channels,
                                             kernel_size=kernel_size,
                                             stride=stride,
-                                            padding=padding),
+                                            padding=padding)),
                                   nn.InstanceNorm2d(num_features=out_channels,
                                                     affine=True),
                                   GLU())
