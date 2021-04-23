@@ -34,6 +34,7 @@ class MaskCycleGANVCTraining(object):
         self.generator_lr = args.generator_lr
         self.discriminator_lr = args.discriminator_lr
         self.decay_after = args.decay_after
+        self.stop_identity_after = args.stop_identity_after
         self.mini_batch_size = args.batch_size
         self.cycle_loss_lambda = args.cycle_loss_lambda
         self.identity_loss_lambda = args.identity_loss_lambda
@@ -287,11 +288,14 @@ class MaskCycleGANVCTraining(object):
 
                 # Adjust learning rates
                 if self.logger.global_step > self.decay_after:
-                    self.identity_loss_lambda = 0
                     self.adjust_lr_rate(
                         self.generator_optimizer, generator=True)
                     self.adjust_lr_rate(
                         self.generator_optimizer, generator=False)
+
+                # Set identity loss to zero if larger than given value
+                if self.logger.global_step > self.stop_identity_after:
+                    self.identity_loss_lambda = 0
 
             # Log intermediate outputs on Tensorboard
             if self.logger.epoch % self.epochs_per_plot == 0:
