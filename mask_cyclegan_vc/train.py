@@ -174,7 +174,7 @@ class MaskCycleGANVCTraining(object):
     def train(self):
         """Implements the training loop for MaskCycleGAN-VC
         """
-        for epoch in range(self.start_epoch, self.num_epochs):
+        for epoch in range(self.start_epoch, self.num_epochs + 1):
             self.logger.start_epoch()
 
             for i, (real_A, mask_A, real_B, mask_B) in enumerate(tqdm(self.train_dataloader)):
