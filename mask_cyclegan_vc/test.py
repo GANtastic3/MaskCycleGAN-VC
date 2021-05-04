@@ -99,6 +99,8 @@ class MaskCycleGANVCTesting(object):
                 save_path = os.path.join(self.converted_audio_dir, f"{i}-converted_{self.speaker_A_id}_to_{self.speaker_B_id}.wav")
                 save_path_orig = os.path.join(self.converted_audio_dir,
                                          f"{i}-original_{self.speaker_A_id}_to_{self.speaker_B_id}.wav")
+                torchaudio.save(save_path, wav_fake_B, sample_rate=self.sample_rate)
+                torchaudio.save(save_path_orig, wav_real_A, sample_rate=self.sample_rate)
             else:
                 real_B = sample
                 real_B = real_B.to(self.device, dtype=torch.float)
@@ -113,8 +115,8 @@ class MaskCycleGANVCTesting(object):
                 save_path = os.path.join(self.converted_audio_dir, f"{i}-converted_{self.speaker_B_id}_to_{self.speaker_A_id}.wav")
                 save_path_orig = os.path.join(self.converted_audio_dir,
                                          f"{i}-original_{self.speaker_B_id}_to_{self.speaker_A_id}.wav")
-            torchaudio.save(save_path, wav_fake_A, sample_rate=self.sample_rate)
-            torchaudio.save(save_path_orig, wav_real_B, sample_rate=self.sample_rate)
+                torchaudio.save(save_path, wav_fake_A, sample_rate=self.sample_rate)
+                torchaudio.save(save_path_orig, wav_real_B, sample_rate=self.sample_rate)
 
 
 if __name__ == "__main__":
