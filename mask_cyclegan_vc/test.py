@@ -63,11 +63,12 @@ class MaskCycleGANVCTesting(object):
                                                            drop_last=False)
 
         # Generator
-        self.generator = Generator().to(self.device)
+        self.generator_A2B = Generator().to(self.device)
+        self.generator_A2B.eval()
 
         # Load Generator from ckpt
         self.saver = ModelSaver(args)
-        self.saver.load_model(self.generator, self.model_name)
+        self.saver.load_model(self.generator_A2B, self.model_name)
 
     def loadPickleFile(self, fileName):
         """Loads a Pickle file.
@@ -82,38 +83,24 @@ class MaskCycleGANVCTesting(object):
             return pickle.load(f)
 
     def test(self):
-        for i, sample in enumerate(tqdm(self.test_dataloader)):
-
+        for i, (real_A) in enumerate(tqdm(self.test_dataloader)):
+            real_A = real_A.to(self.device, dtype=torch.float)
+            fake_B = self.generator_A2B(real_A, torch.ones_like(real_A))
+            wav_fake_B = decode_melspectrogram(self.vocoder, fake_B[0].detach(
+            ).cpu(), self.dataset_A_mean, self.dataset_A_std).cpu()
+            wav_real_A = decode_melspectrogram(self.vocoder, real_A[0].detach(
+            ).cpu(), self.dataset_A_mean, self.dataset_A_std).cpu()
             save_path = None
             if self.model_name == 'generator_A2B':
-                real_A = sample
-                real_A = real_A.to(self.device, dtype=torch.float)
-                fake_B = self.generator(real_A, torch.ones_like(real_A))
-
-                wav_fake_B = decode_melspectrogram(self.vocoder, fake_B[0].detach(
-                ).cpu(), self.dataset_B_mean, self.dataset_B_std).cpu()
-
-                wav_real_A = decode_melspectrogram(self.vocoder, real_A[0].detach(
-                ).cpu(), self.dataset_A_mean, self.dataset_A_std).cpu()
                 save_path = os.path.join(self.converted_audio_dir, f"{i}-converted_{self.speaker_A_id}_to_{self.speaker_B_id}.wav")
                 save_path_orig = os.path.join(self.converted_audio_dir,
                                          f"{i}-original_{self.speaker_A_id}_to_{self.speaker_B_id}.wav")
             else:
-                real_B = sample
-                real_B = real_B.to(self.device, dtype=torch.float)
-                fake_A = self.generator(real_B, torch.ones_like(real_B))
-
-                wav_fake_A = decode_melspectrogram(self.vocoder, fake_A[0].detach(
-                ).cpu(), self.dataset_A_mean, self.dataset_A_std).cpu()
-
-                wav_real_B = decode_melspectrogram(self.vocoder, real_B[0].detach(
-                ).cpu(), self.dataset_B_mean, self.dataset_B_std).cpu()
-
                 save_path = os.path.join(self.converted_audio_dir, f"{i}-converted_{self.speaker_B_id}_to_{self.speaker_A_id}.wav")
                 save_path_orig = os.path.join(self.converted_audio_dir,
                                          f"{i}-original_{self.speaker_B_id}_to_{self.speaker_A_id}.wav")
-            torchaudio.save(save_path, wav_fake_A, sample_rate=self.sample_rate)
-            torchaudio.save(save_path_orig, wav_real_B, sample_rate=self.sample_rate)
+            torchaudio.save(save_path, wav_fake_B, sample_rate=self.sample_rate)
+            torchaudio.save(save_path_orig, wav_real_A, sample_rate=self.sample_rate)
 
 
 if __name__ == "__main__":

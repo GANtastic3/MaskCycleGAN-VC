@@ -16,11 +16,11 @@ class TrainArgParser(BaseArgParser):
         super(TrainArgParser, self).__init__()
         self.isTrain = True
 
-        self.parser.add_argument('--num_epochs', type=int, default=20, help='Number of epochs to train.')
+        self.parser.add_argument('--num_epochs', type=int, default=6500, help='Number of epochs to train.')
         self.parser.add_argument(
-            '--lr', type=float, default=5e-4, help='Learning rate.')
+            '--decay_after', type=float, default=2e5, help='Learning rate.')
         self.parser.add_argument(
-            '--decay_after', type=float, default=1e4, help='Learning rate.')
+            '--stop_identity_after', type=float, default=1e4, help='Learning rate.')
 
         self.parser.add_argument('--max_ckpts', type=int, default=3, help='Max ckpts to save.')
         self.parser.add_argument('--continue_train', action='store_true', help='continue training: load the latest model')
