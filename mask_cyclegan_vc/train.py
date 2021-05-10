@@ -326,8 +326,8 @@ class MaskCycleGANVCTraining(object):
                         real_B[0].detach().cpu())
                     fake_mel_B_fig = get_mel_spectrogram_fig(
                         generated_B[0].detach().cpu())
-                    self.logger.visualize_outputs({"real_voc_spec": real_mel_A_fig, "fake_coraal_spec": fake_mel_B_fig,
-                                                   "real_coraal_spec": real_mel_B_fig, "fake_voc_spec": fake_mel_A_fig})
+                    self.logger.visualize_outputs({"real_A_spec": real_mel_A_fig, "fake_B_spec": fake_mel_B_fig,
+                                                   "real_B_spec": real_mel_B_fig, "fake_A_spec": fake_mel_A_fig})
 
                     # Convert Mel-spectrograms from validation set to waveform and log to tensorboard
                     real_mel_full_A, real_mel_full_B = next(
