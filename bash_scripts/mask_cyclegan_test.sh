@@ -1,5 +1,3 @@
-# Sample test script to convert between VCC2SF3 and VCC2TF1
-
 python -m mask_cyclegan_vc.test \
     --name mask_cyclegan_vc_VCC2SF3_VCC2TF1 \
     --save_dir results/ \

@@ -32,7 +32,9 @@ def normalize_mel(wavspath):
     for wavpath in tqdm(wav_files, desc='Preprocess wav to mel'):
         wav_orig, _ = librosa.load(wavpath, sr=SAMPLING_RATE, mono=True)
         spec = vocoder(torch.tensor([wav_orig]))
-        mel_list.append(spec.cpu().detach().numpy()[0])
+
+        if spec.shape[-1] >= 64:    # training sample consists of 64 randomly cropped frames
+            mel_list.append(spec.cpu().detach().numpy()[0])
 
     mel_concatenated = np.concatenate(mel_list, axis=1)
     mel_mean = np.mean(mel_concatenated, axis=1, keepdims=True)
